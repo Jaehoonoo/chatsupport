@@ -1,49 +1,49 @@
 "use client";
 
-import React, {useState} from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/firebaseConfig';
 
-export default function Login() {
+export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = '/';
+      await createUserWithEmailAndPassword(auth, email, password);
+      window.location.href = '/'; // Redirect to chat page after signup
     } catch (error) {
-      setError('Failed to sign in. Please check your credentials.');
+      setError('Failed to create an account. Please try again.');
     }
   };
-  
+
   return (
     <div style={styles.container}>
       <div style={styles.overlay}></div>
       <div style={styles.box}>
-        <h2 style={styles.title}>Login Form</h2>
-        <form onSubmit = {handleLogin}>
+        <h2 style={styles.title}>Sign Up</h2>
+        <form onSubmit={handleSignup}>
           <input
-            style = {styles.input}
-            type = "email"
-            placeholder = "hello@admin.com"
-            value = {email}
-            onChange = {(e) => setEmail(e.target.value)}
+            style={styles.input}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            style = {styles.input}
-            type = "password"
-            placeholder = "Password"
-            value = {password}
-            onChange = {(e) => setPassword(e.target.value)}
+            style={styles.input}
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
-          {error && <p style = {styles.errorText}>{error}</p>}
-          <button style = {styles.button} type = "submit">Login</button>
+          {error && <p style={styles.errorText}>{error}</p>}
+          <button style={styles.button} type="submit">Sign Up</button>
         </form>
         <p style={styles.signupText}>
-          Don't have an account? <a href="/signup" style={styles.signupLink}>Signup Now</a>
+          Already have an account? <a href="/login" style={styles.signupLink}>Login</a>
         </p>
       </div>
     </div>
@@ -56,14 +56,10 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    backgroundImage: 'url("/images/background.png")',  // Update this path with your image's path
+    backgroundImage: 'url("/images/background.png")',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     position: 'relative',
-    errorText: {
-      color: 'red',
-      marginBottom: '15px',
-    },
   },
   overlay: {
     position: 'absolute',
@@ -71,7 +67,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay with 50% opacity
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     zIndex: 1,
   },
   box: {
@@ -79,7 +75,7 @@ const styles = {
     zIndex: 2,
     padding: '40px',
     width: '320px',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Slightly transparent background
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: '15px',
     textAlign: 'center',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -118,5 +114,9 @@ const styles = {
   signupLink: {
     color: '#c3c78e',
     textDecoration: 'none',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: '15px',
   },
 };
