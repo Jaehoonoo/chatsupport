@@ -1,23 +1,32 @@
-//page.js
 'use client'
 import { Stack, Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Head from 'next/head';
 import SendIcon from '@mui/icons-material/Send';
 import { db } from "@/firebase";
 import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { auth } from './config/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Home() {
   const [messages, setMessages] = useState([
     {
-    role: 'assistant',
-    content: `Hi, I'm the Gainful Support Agent, how can I assist you today?`,
+      role: 'assistant',
+      content: `Hi, I'm the Gainful Support Agent, how can I assist you today?`,
     },
-  ])
+  ]);
 
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null); // User state for authentication
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe(); // Clean up the subscription on unmount
+  }, []);
 
   const saveConversation = async (conversation) => {
     try {
@@ -31,7 +40,7 @@ export default function Home() {
       console.error('Error adding document: ', e);
     }
   };
-  
+
   const updateConversation = async (docId, conversation) => {
     try {
       const docRef = doc(db, 'conversations', docId);
@@ -45,7 +54,7 @@ export default function Home() {
   };
 
   const sendMessage = async () => {
-    if (!message.trim()) return; // Prevent sending empty messages
+    if (!message.trim()) return;
 
     const newMessages = [
       ...messages,
@@ -120,6 +129,9 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Gainful Customer Support</title>
+      </Head>
       <Box
         width="100vw"
         height="100vh"
@@ -127,21 +139,51 @@ export default function Home() {
         display="flex"
         flexDirection="column"
       >
-        {/* header */}
+        {/* Login Status Button */}
+        <Box
+          position="absolute"
+          top={10}
+          left={10}
+        >
+          <Button
+            variant="contained"
+            sx = {{
+              bgcolor: user ? 'red' : 'green',
+              '&:hover': {
+                bgcolor: user ? 'darkred' : 'darkgreen',
+              },
+              color: 'white'
+            }}
+            onClick={() => {
+              if (user) {
+                auth.signOut();
+              } else {
+                window.location.href = '/login';
+              }
+            }}
+          >
+            {user ? 'Logout' : 'Login'}
+          </Button>
+        </Box>
+
+        {/* Header */}
         <Box
           maxWidth
-          height={100}
+          height={90}
           bgcolor={"#204D46"}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
-          <Typography
-            variant="h4"
-            color="white"
-          >
-            GAINFUL CUSTOMER SUPPORT
-          </Typography>
+          <Box
+            component="img"
+            sx={{
+              height: 50,
+              width: 50,
+            }}
+            alt="Logo"
+            src="https://www.gainful.com/_next/image/?url=https%3A%2F%2Fdlye1hka1kz5z.cloudfront.net%2F_next%2Fstatic%2Fmedia%2Flogo-light.082ab69b.webp&w=1200&q=75"
+          />
         </Box>
 
         <Box
@@ -214,7 +256,6 @@ export default function Home() {
                 +
               </Typography>
             </Box>
-
           </Box>
 
           {/* Chat */}
@@ -224,7 +265,6 @@ export default function Home() {
             direction="column"
             p={2}
             spacing={2}
-
           >
             <Stack
               direction="column"
@@ -282,17 +322,14 @@ export default function Home() {
                   bgcolor: "#edff79", borderColor: "#edff79", color: "black",
                   '&:hover': { bgcolor: "#76915e", borderColor: "#76915e" }
                 }}
-                endIcon={<SendIcon />}
+                endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
               >
-                Send
+                {isLoading ? "Sending..." : "Send"}
               </Button>
-
             </Stack>
-
           </Stack>
         </Box>
       </Box>
     </>
   )
 }
-
