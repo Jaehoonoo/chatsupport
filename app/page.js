@@ -131,6 +131,7 @@ export default function Home() {
     <>
       <Head>
         <title>Gainful Customer Support</title>
+        <meta name="description" content="Gainful customer support page." />
       </Head>
       <Box
         width="100vw"
@@ -139,34 +140,6 @@ export default function Home() {
         display="flex"
         flexDirection="column"
       >
-        {/* Login Status Button */}
-        <Box
-          position="absolute"
-          top={22}
-          left={20}
-        >
-          <Button
-            variant="contained"
-            sx = {{
-              bgcolor: user ? 'red' : '#edff79',
-              '&:hover': {
-                bgcolor: user ? 'darkred' : '#a6b355',
-              },
-              color: '#204D46',
-              fontWeight: 'bold',
-            }}
-            onClick={() => {
-              if (user) {
-                auth.signOut();
-              } else {
-                window.location.href = '/login';
-              }
-            }}
-          >
-            {user ? 'Logout' : 'Login'}
-          </Button>
-        </Box>
-
         {/* Header */}
         <Box
           maxWidth
@@ -174,8 +147,11 @@ export default function Home() {
           bgcolor={"#204D46"}
           display="flex"
           alignItems="center"
-          justifyContent="center"
+          justifyContent="space-between"
         >
+          {/* Empty Box for space */}
+          <Box width="34%" />
+
           <Box
             component="img"
             sx={{
@@ -185,6 +161,36 @@ export default function Home() {
             alt="Logo"
             src="https://www.gainful.com/_next/image/?url=https%3A%2F%2Fdlye1hka1kz5z.cloudfront.net%2F_next%2Fstatic%2Fmedia%2Flogo-light.082ab69b.webp&w=1200&q=75"
           />
+          {/* Login Status Button */}
+          <Box
+            // position="relative"
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            width="33%"
+            marginRight="2%"
+          >
+            <Button
+              variant="contained"
+              sx = {{
+                bgcolor: user ? 'red' : '#edff79',
+                '&:hover': {
+                  bgcolor: user ? 'darkred' : '#a6b355',
+                },
+                color: '#204D46',
+                fontWeight: 'bold',
+              }}
+              onClick={() => {
+                if (user) {
+                  auth.signOut();
+                } else {
+                  window.location.href = '/login';
+                }
+              }}
+            >
+              {user ? 'Logout' : 'Login'}
+            </Button>
+          </Box>
         </Box>
 
         <Box
