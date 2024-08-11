@@ -142,17 +142,18 @@ export default function Home() {
         {/* Login Status Button */}
         <Box
           position="absolute"
-          top={10}
-          left={10}
+          top={22}
+          left={20}
         >
           <Button
             variant="contained"
             sx = {{
-              bgcolor: user ? 'red' : 'green',
+              bgcolor: user ? 'red' : '#edff79',
               '&:hover': {
-                bgcolor: user ? 'darkred' : 'darkgreen',
+                bgcolor: user ? 'darkred' : '#a6b355',
               },
-              color: 'white'
+              color: '#204D46',
+              fontWeight: 'bold',
             }}
             onClick={() => {
               if (user) {
@@ -223,6 +224,7 @@ export default function Home() {
                   "& fieldset": { border: 'none' },
                   '& .MuiInputBase-input': {
                     backgroundColor: '#F5F5F5',
+                    borderRadius: '20px',
                   },
                   '&:hover fieldset': {
                     borderColor: 'green',
@@ -292,7 +294,7 @@ export default function Home() {
               }
               <div ref={messagesEndRef} />
             </Stack>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={1}>
               <TextField
                 placeholder="Ask a question"
                 bgcolor="white"
@@ -302,9 +304,10 @@ export default function Home() {
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
                 sx={{
-                  "& fieldset": { border: 'none' },
+                  "& fieldset": { border: 'none', borderRadius: '20px' },
                   '& .MuiInputBase-input': {
                     backgroundColor: 'white',
+                    borderRadius: '20px',
                   },
                   '&:hover fieldset': {
                     borderColor: 'green',
@@ -315,16 +318,23 @@ export default function Home() {
                 }}
               />
               <Button
-                variant="outlined"
+                variant="contained"
                 onClick={sendMessage}
                 disabled={isLoading}
                 sx={{
-                  bgcolor: "#edff79", borderColor: "#edff79", color: "black",
-                  '&:hover': { bgcolor: "#76915e", borderColor: "#76915e" }
+                  bgcolor: "#204D46", color: "white",
+                  '&:hover': { bgcolor: "#1a3e38" },
+                  borderRadius: "20px",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '& .MuiButton-endIcon': {
+                    marginLeft: '0px', // Adjust if needed to control spacing
+                    marginRight: '0px',
+                  },
                 }}
                 endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
               >
-                {isLoading ? "Sending..." : "Send"}
               </Button>
             </Stack>
           </Stack>

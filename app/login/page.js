@@ -43,7 +43,7 @@ export default function Login() {
           <button style = {styles.button} type = "submit">Login</button>
         </form>
         <p style={styles.signupText}>
-          Don't have an account? <a href="/signup" style={styles.signupLink}>Signup Now</a>
+          Don&apos;t have an account? <a href="/signup" style={styles.signupLink}>Signup Now</a>
         </p>
       </div>
     </div>
