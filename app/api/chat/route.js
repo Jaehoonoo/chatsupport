@@ -1,4 +1,3 @@
-//route.js
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
@@ -53,7 +52,7 @@ export async function POST(req) {
             { role: "system", content: systemPrompt },
             ...data,
         ],
-        model: "gpt-4o", // You can switch to "gpt-4o-mini" if preferred
+        model: "gpt-4o",
         stream: true,
     });
 
@@ -64,7 +63,6 @@ export async function POST(req) {
                 for await (const chunk of completion) {
                     const content = chunk.choices[0]?.delta?.content;
                     if (content) {
-                        // Clean content (remove markdown or other formatting)
                         const cleanedContent = content.replace(/\*\*/g, '');
                         const text = encoder.encode(cleanedContent);
                         controller.enqueue(text);

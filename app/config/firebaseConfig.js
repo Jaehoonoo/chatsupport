@@ -7,7 +7,6 @@ const firebaseConfigAuth = {
   projectId: "chatsupport-d46fd",
 };
 
-// Initialize Firebase app for user authentication with a unique name
 const appAuth = !getApps().some(app => app.name === 'authApp') 
   ? initializeApp(firebaseConfigAuth, 'authApp') 
   : getApp('authApp');

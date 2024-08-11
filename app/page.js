@@ -18,14 +18,14 @@ export default function Home() {
 
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null); // User state for authentication
+  const [user, setUser] = useState(null); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
 
-    return () => unsubscribe(); // Clean up the subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   const saveConversation = async (conversation) => {

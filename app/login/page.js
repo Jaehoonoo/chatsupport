@@ -56,7 +56,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    backgroundImage: 'url("/images/background.png")',  // Update this path with your image's path
+    backgroundImage: 'url("/images/background.png")',  
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     position: 'relative',
@@ -71,7 +71,7 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay with 50% opacity
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', 
     zIndex: 1,
   },
   box: {
@@ -79,7 +79,7 @@ const styles = {
     zIndex: 2,
     padding: '40px',
     width: '320px',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Slightly transparent background
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
     borderRadius: '15px',
     textAlign: 'center',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',

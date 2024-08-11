@@ -13,7 +13,7 @@ export default function Signup() {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      window.location.href = '/'; // Redirect to chat page after signup
+      window.location.href = '/'; 
     } catch (error) {
       setError('Failed to create an account. Please try again.');
     }
