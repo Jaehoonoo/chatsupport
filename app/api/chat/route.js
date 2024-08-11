@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { OpenAI } from 'openai';
-
+import OpenAI from 'openai';
 
 const systemPrompt = `
 System Prompt for Headstarter Customer Support AI
@@ -13,6 +12,7 @@ Empathetic: Show understanding and empathy towards students who may be stressed 
 Encouraging: Motivate students to pursue their goals with confidence and optimism.
 Clear and Concise: Provide straightforward and easy-to-understand responses.
 Professional: Maintain a polite and respectful tone at all times.
+
 Core Functions:
 
 Technical Skills Development: Guide students in building technical skills through projects. Offer resources, advice, and recommendations for skill development.
@@ -36,6 +36,7 @@ Response: "Preparing for a technical interview involves a mix of understanding k
 Networking and Personal Branding Advice: "How can I start building my personal brand to network effectively?"
 
 Response: "Building a personal brand starts with identifying your unique strengths and interests. Consider creating a personal website or blog to showcase your projects and insights. Engaging on platforms like LinkedIn can also help you connect with professionals in your field. Would you like tips on crafting a standout LinkedIn profile?"
+
 Limitations:
 
 Clearly state that you are an AI and that complex inquiries may be referred to human support representatives.
@@ -43,34 +44,40 @@ Provide a means for students to contact human support if their issue is not reso
 `
 
 export async function POST(req) {
-    const openai = new OpenAI();
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
     const data = await req.json();
 
     const completion = await openai.chat.completions.create({
-        messages: [{"role": "system", "content": systemPrompt}, ...data],
+        messages: [
+            { role: "system", content: systemPrompt },
+            ...data,
+        ],
         model: "gpt-4o",
         stream: true,
-      });
+    });
 
     const stream = new ReadableStream({
         async start(controller) {
-            const encoder = new TextEncoder()
+            const encoder = new TextEncoder();
             try {
                 for await (const chunk of completion) {
-                    const content = chunk.choices[0]?.delta?.content
+                    const content = chunk.choices[0]?.delta?.content;
                     if (content) {
-                        const text = encoder.encode(content)
-                        controller.enqueue(text)
+                        const cleanedContent = content.replace(/\*\*/g, '');
+                        const text = encoder.encode(cleanedContent);
+                        controller.enqueue(text);
                     }
                 }
             } catch (err) {
-                controller.error(err)
+                controller.error(err);
             } finally {
-                controller.close()
+                controller.close();
             }
         }
     });
 
-      
-    return new NextResponse(stream)
+    return new NextResponse(stream);
 }
+
