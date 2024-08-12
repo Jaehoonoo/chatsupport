@@ -243,7 +243,7 @@ export default function Home() {
           alignItems="center"
           justifyContent="space-between"
           padding="2%"
-          height={75}
+          height={80}
           bgcolor={"#204D46"}
         >
           <Box
@@ -432,8 +432,7 @@ export default function Home() {
                 fullWidth
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={disabled || isLoading}
+                onKeyDown={handleKeyPress}
                 sx={{
                   "& fieldset": { border: 'none' },
                   '& .MuiInputBase-input': {
