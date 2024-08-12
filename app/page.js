@@ -322,7 +322,8 @@ export default function Home() {
               width={320}
               height="auto"
               paddingBottom={4}
-              bgcolor={"white"}
+              bgcolor={"#204D46"}
+              color={"white"}
               borderRadius={3}
               display="flex"
               alignItems={"center"}
@@ -348,7 +349,7 @@ export default function Home() {
                 display="flex"
                 alignItems={"center"}
                 justifyContent={"center"}
-                mb={4}
+                mb="2rem"
                 onClick={() => {
                   setSelectedConversation(null)
                   setIsNewChat(true)
@@ -356,7 +357,7 @@ export default function Home() {
                 }}
                 sx={{ cursor: 'pointer' }}
               >
-                <Typography variant="h2" color={"#7F928F"}>
+                <Typography variant="h2" color={"#7F928F"} paddingBottom={2}>
                   +
                 </Typography>
               </Box>
@@ -399,7 +400,7 @@ export default function Home() {
               spacing={2}
               flexGrow={1}
               overflow="auto"
-              maxHeight={730}
+              maxHeight="68vh"
             >
               {
                 messages.map((message, index) => (
