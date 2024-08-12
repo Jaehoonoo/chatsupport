@@ -27,6 +27,7 @@ export default function Home() {
   const [disabled, setDisabled] = useState(false);
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [animateOut, setAnimateOut] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -215,13 +216,33 @@ export default function Home() {
   const toggleChatHistory = () => {
     if (showChatHistory) {
       setAnimateOut(true);
+      setShowOverlay(false);
       setTimeout(() => {
         setShowChatHistory(false);
         setAnimateOut(false);
       }, 300);
     } else {
       setShowChatHistory(true);
+      setShowOverlay(true);
     }
+  };
+
+  const handleOverlayClick = () => {
+    if(showChatHistory) {
+      toggleChatHistory();
+    }
+  }
+
+  const handleChatHistoryClick = (conversation) => {
+    setSelectedConversation(conversation);
+    setIsNewChat(false);
+    setDisabled(true);
+    setShowOverlay(false);
+    setAnimateOut(true); 
+    setTimeout(() => {
+      setShowChatHistory(false); 
+      setAnimateOut(false); 
+    }, 300); 
   };
 
   return (
@@ -279,6 +300,19 @@ export default function Home() {
               src="https://www.gainful.com/_next/image/?url=https%3A%2F%2Fdlye1hka1kz5z.cloudfront.net%2F_next%2Fstatic%2Fmedia%2Flogo-light.082ab69b.webp&w=1200&q=75"
             />
           </Box>
+
+          {showOverlay && (
+            <Box
+              position="fixed"
+              top="0"
+              left="0"
+              width="100vw"
+              height="100vh"
+              bgcolor="rgba(0, 0, 0, 0.5)"
+              zIndex="10"
+              onClick={handleOverlayClick}
+              />
+          )}
 
           <Box
             display="flex"
@@ -354,6 +388,11 @@ export default function Home() {
                   setSelectedConversation(null)
                   setIsNewChat(true)
                   setDisabled(false);
+                  setShowOverlay(false);
+                  setTimeout(() => {
+                    setShowChatHistory(false); 
+                    setAnimateOut(false); 
+                  }, 300); 
                 }}
                 sx={{ cursor: 'pointer' }}
               >
@@ -371,11 +410,7 @@ export default function Home() {
                     borderRadius={3}
                     p={2}
                     bgcolor={selectedConversation?.id === conversation.id ? "#204D46" : "#F5F5F5"}
-                    onClick={() => {
-                      setSelectedConversation(conversation);
-                      setIsNewChat(false);
-                      setDisabled(true);
-                    }}
+                    onClick={() => handleChatHistoryClick(conversation)}
                     sx={{ cursor: 'pointer', }}
                   >
                     <Typography variant="body2" color={selectedConversation?.id === conversation.id ? "white" : "#7F928F"}>
