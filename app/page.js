@@ -242,8 +242,8 @@ export default function Home() {
           display="flex"
           alignItems="center"
           justifyContent="space-between"
-          padding="0 2%"
-          height={90}
+          padding="2%"
+          height={75}
           bgcolor={"#204D46"}
         >
           <Box
@@ -320,7 +320,8 @@ export default function Home() {
           {user && showChatHistory && (
             <Box
               width={320}
-              height="100%"
+              height="auto"
+              paddingBottom={4}
               bgcolor={"white"}
               borderRadius={3}
               display="flex"
@@ -398,7 +399,8 @@ export default function Home() {
               spacing={2}
               flexGrow={1}
               overflow="auto"
-              maxHeight={540}>
+              maxHeight={730}
+            >
               {
                 messages.map((message, index) => (
                   <Box key={index} display="flex" justifyContent={
@@ -408,10 +410,13 @@ export default function Home() {
                       message.role === 'assistant' ? 'white' : '#204D46'
                     }
                       color={message.role === 'assistant' ? 'black' : 'white'}
-                      borderRadius={4}
+                      borderRadius={6.8}
                       px={3}
                       py={2}
-                      fontSize={13}>
+                      fontSize={13}
+                      lineHeight={2}
+                      maxWidth="75%"
+                      >
                       {message.content}
                     </Box>
                   </Box>
@@ -432,9 +437,11 @@ export default function Home() {
                   "& fieldset": { border: 'none' },
                   '& .MuiInputBase-input': {
                     backgroundColor: 'white',
+                    borderRadius: '20px',
                   },
                   '&:hover fieldset': {
                     borderColor: 'green',
+                    borderRadius: '20px',
                   },
                   '&.Mui-focused fieldset': {
                     borderColor: '#204D46',
