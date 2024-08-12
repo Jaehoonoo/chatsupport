@@ -409,11 +409,11 @@ export default function Home() {
                     height={100}
                     borderRadius={3}
                     p={2}
-                    bgcolor={selectedConversation?.id === conversation.id ? "#204D46" : "#F5F5F5"}
+                    bgcolor={selectedConversation?.id === conversation.id ? "#edff79" : "#F5F5F5"}
                     onClick={() => handleChatHistoryClick(conversation)}
                     sx={{ cursor: 'pointer', }}
                   >
-                    <Typography variant="body2" color={selectedConversation?.id === conversation.id ? "white" : "#7F928F"}>
+                    <Typography variant="body2" color={selectedConversation?.id === conversation.id ? "#204D46" : "#204D46"}>
                       {conversation.messages[conversation.messages.length - 1]?.content.substring(0, 50)}...
                     </Typography>
                   </Box>
