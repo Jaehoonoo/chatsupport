@@ -14,6 +14,7 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [isHovered, setIsHovered] = useState(false); 
   const [isLoginHovered, setIsLoginHovered] = useState(false); 
+  const [isBackHovered, setIsBackHovered] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -37,10 +38,23 @@ export default function Signup() {
     }
   };
 
+  const handleBack = () => {
+    window.location.href = '/';
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.overlay}></div>
       <div style={styles.box}>
+        <button
+            style={isBackHovered ? { ...styles.back, ...styles.backHover } : styles.back} 
+            type="submit"
+            onMouseEnter={() => setIsBackHovered(true)} 
+            onMouseLeave={() => setIsBackHovered(false)} 
+            onClick={handleBack}
+          >
+            Back
+          </button>
         <h2 style={styles.title}>Sign Up</h2>
         <form onSubmit={handleSignup}>
           <input
@@ -169,9 +183,28 @@ const styles = {
   },
   signupLinkHover: {
     textDecoration: 'underline',
+    color: '#a3a37a',
   },
   errorText: {
     color: 'red',
     marginBottom: '15px',
+  },
+  back: {
+    position: 'absolute',
+    top: '12px',
+    left: '12px',
+    padding: '11px',
+    backgroundColor: '#2f4f3f',
+    color: 'white',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '15px',
+    fontWeight: '500',
+    transition: 'background-color 0.3s ease, transform 0.3s ease',
+  },
+  backHover: {
+    backgroundColor: '#1e2d27',
+    transform: 'scale(1.05)',
   },
 };
