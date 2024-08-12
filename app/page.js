@@ -5,7 +5,7 @@ import Head from 'next/head';
 import SendIcon from '@mui/icons-material/Send';
 import HistoryIcon from '@mui/icons-material/History';
 import { db } from "@/firebase";
-import { collection, addDoc, doc, updateDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, getDocs, deleteDoc } from 'firebase/firestore';
 import { auth } from '@/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -36,6 +36,21 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
+  const updateConversation = async (docId, conversation) => {
+    try {
+      const docRef = doc(db, 'conversations', docId);
+      await updateDoc(docRef, {
+        messages: conversation,
+        timestamp: new Date(),
+      });
+      console.log(`Updated conversation with ID: ${docId}`);
+    } catch (e) {
+      console.error('Error updating document: ', e);
+    }
+  };
+  
+  
+  
   const saveConversation = async (conversation) => {
     try {
       const docRef = await addDoc(collection(db, 'conversations'), {
@@ -44,10 +59,19 @@ export default function Home() {
       });
       console.log('Conversation saved with ID: ', docRef.id);
       
-      setConversations(prevConversations => [
-        { id: docRef.id, messages: conversation, timestamp: new Date() },
-        ...prevConversations
-      ]);
+      setConversations(prevConversations => {
+        const updatedConversations = [
+          { id : docRef.id, messages: conversation, timestamp: new Date() },
+          ...prevConversations
+        ];
+
+        if (updatedConversations.length > 5) {
+          deleteOldestConversation(updatedConversations[updatedConversations.length - 1].id);
+          return updatedConversations.slice(0, 5);
+        }
+
+        return updatedConversations;
+      });
 
       setDocId(docRef.id);
       return docRef.id;
@@ -56,15 +80,13 @@ export default function Home() {
     }
   };
 
-  const updateConversation = async (docId, conversation) => {
+  const deleteOldestConversation = async (conversationId) => {
     try {
-      const docRef = doc(db, 'conversations', docId);
-      await updateDoc(docRef, {
-        messages: conversation,
-        timestamp: new Date(),
-      });
+      const docRef = doc(db, 'conversations', conversationId);
+      await deleteDoc(docRef);
+      console.log(`Deleted oldest conversation with ID: ${conversationId}`);
     } catch (e) {
-      console.error('Error updating document: ', e);
+      console.error('Error deleting document: ', e);
     }
   };
 
