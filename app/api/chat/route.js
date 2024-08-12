@@ -45,7 +45,8 @@ Provide a means for students to contact human support if their issue is not reso
 
 export async function POST(req) {
     const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
+        baseURL: "https://openrouter.ai/api/v1",
+        apiKey: process.env.OPENROUTER_API_KEY,
     });
     const data = await req.json();
 
@@ -54,7 +55,7 @@ export async function POST(req) {
             { role: "system", content: systemPrompt },
             ...data,
         ],
-        model: "gpt-4o",
+        model: "meta-llama/llama-3.1-8b-instruct:free",
         stream: true,
     });
 
@@ -77,7 +78,7 @@ export async function POST(req) {
             }
         }
     });
-
-    return new NextResponse(stream);
+ 
+    return new NextResponse(stream)
 }
 

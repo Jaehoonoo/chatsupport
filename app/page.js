@@ -54,61 +54,41 @@ export default function Home() {
   };
 
   const sendMessage = async () => {
-    if (!message.trim()) return;
-
-    const newMessages = [
-      ...messages,
-      { role: "user", content: message },
-      { role: "assistant", content: '' }
-    ];
-
-    setIsLoading(true);
-    setMessage('');
-    setMessages(newMessages);
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify([...messages, { role: 'user', content: message }]),
-      });
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-
-      let result = '';
-      await reader.read().then(function processText({ done, value }) {
+    setMessage('')
+    setMessages((messages) => [
+      ...messages, 
+      {role: 'user', content: message}, 
+      {role: 'assistant', content: '',},
+    ])
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([...messages, {role: 'user', content: message}]),
+    }).then(async (res) => {
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let result = ''
+      return reader.read().then(function processText({done, value}) {
         if (done) {
-          saveConversation(newMessages);
-          setIsLoading(false);
-          return result;
+          return result
         }
-
-        const text = decoder.decode(value || new Int8Array(), { stream: true });
-
+        const text = decoder.decode(value || new Uint8Array(), {stream: true})
         setMessages((messages) => {
-          let lastMessage = messages[messages.length - 1];
-          let otherMessages = messages.slice(0, messages.length - 1);
-          const updatedMessages = [
-            ...otherMessages,
-            {
-              ...lastMessage,
-              content: lastMessage.content + text
-            },
-          ];
-          updateConversation(updatedMessages);
-          return updatedMessages;
-        });
+          let lastMessage = messages[messages.length - 1]
+          let otherMessages = messages.slice(0, messages.length - 1)
 
-        return reader.read().then(processText);
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setIsLoading(false);
-    }
-  };
+          return [
+            ...otherMessages,
+            {...lastMessage, content: lastMessage.content + text},
+          ]
+        })
+
+        return reader.read().then(processText)
+      })
+    })
+  }
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
