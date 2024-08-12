@@ -168,7 +168,7 @@ export default function Home() {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter' && !event.shiftKey && !disabled) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
@@ -486,7 +486,6 @@ export default function Home() {
               <Button
                 variant="contained"
                 onClick={sendMessage}
-                disabled={disabled || isLoading}
                 sx={{
                   bgcolor: "#204D46", color: "white",
                   '&:hover': { bgcolor: "#1a3e38" },
