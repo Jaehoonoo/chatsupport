@@ -1,30 +1,76 @@
 "use client";
 
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebaseConfig';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '@/firebase';
+import { db } from "@/firebase"; 
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
+  const [isHovered, setIsHovered] = useState(false); 
+  const [isLoginHovered, setIsLoginHovered] = useState(false); 
+  const [isBackHovered, setIsBackHovered] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await updateProfile(user, {
+        displayName: `${firstName} ${lastName}`
+      });
+
+      await setDoc(doc(db, 'users', user.uid), {
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+      });
+
       window.location.href = '/'; 
     } catch (error) {
       setError('Failed to create an account. Please try again.');
     }
   };
 
+  const handleBack = () => {
+    window.location.href = '/';
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.overlay}></div>
       <div style={styles.box}>
+        <button
+            style={isBackHovered ? { ...styles.back, ...styles.backHover } : styles.back} 
+            type="submit"
+            onMouseEnter={() => setIsBackHovered(true)} 
+            onMouseLeave={() => setIsBackHovered(false)} 
+            onClick={handleBack}
+          >
+            Back
+          </button>
         <h2 style={styles.title}>Sign Up</h2>
         <form onSubmit={handleSignup}>
+          <input
+            style={styles.input}
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            style={styles.input}
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
           <input
             style={styles.input}
             type="email"
@@ -40,10 +86,25 @@ export default function Signup() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <p style={styles.errorText}>{error}</p>}
-          <button style={styles.button} type="submit">Sign Up</button>
+          <button
+            style={isHovered ? { ...styles.button, ...styles.buttonHover } : styles.button} 
+            type="submit"
+            onMouseEnter={() => setIsHovered(true)} 
+            onMouseLeave={() => setIsHovered(false)} 
+          >
+            Sign Up
+          </button>
         </form>
         <p style={styles.signupText}>
-          Already have an account? <a href="/login" style={styles.signupLink}>Login</a>
+          Already have an account?&nbsp;
+          <a 
+            href="/login" 
+            style={isLoginHovered ? { ...styles.signupLink, ...styles.signupLinkHover } : styles.signupLink}
+            onMouseEnter={() => setIsLoginHovered(true)}
+            onMouseLeave={() => setIsLoginHovered(false)}
+          >
+            Login
+          </a>
         </p>
       </div>
     </div>
@@ -105,6 +166,11 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
     fontWeight: '500',
+    transition: 'background-color 0.3s ease, transform 0.3s ease',
+  },
+  buttonHover: {
+    backgroundColor: '#1e2d27', 
+    transform: 'scale(1.05)', 
   },
   signupText: {
     marginTop: '20px',
@@ -115,8 +181,30 @@ const styles = {
     color: '#c3c78e',
     textDecoration: 'none',
   },
+  signupLinkHover: {
+    textDecoration: 'underline',
+    color: '#a3a37a',
+  },
   errorText: {
     color: 'red',
     marginBottom: '15px',
+  },
+  back: {
+    position: 'absolute',
+    top: '12px',
+    left: '12px',
+    padding: '11px',
+    backgroundColor: '#2f4f3f',
+    color: 'white',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '15px',
+    fontWeight: '500',
+    transition: 'background-color 0.3s ease, transform 0.3s ease',
+  },
+  backHover: {
+    backgroundColor: '#1e2d27',
+    transform: 'scale(1.05)',
   },
 };
